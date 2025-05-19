@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>org.k8loud</groupId>
+    <groupId>org.moamcnee</groupId>
     <artifactId>themis-executor</artifactId>
     <version>${themisExecutorVersion}</version>
     <name>themis-executor</name>
@@ -18,8 +18,8 @@
     <distributionManagement>
         <repository>
             <id>github</id>
-            <name>k8loud</name>
-            <url>https://maven.pkg.github.com/k8loud/themis-executor</url>
+            <name>MoAM-CNEE</name>
+            <url>https://maven.pkg.github.com/MoAM-CNEE/themis-executor</url>
         </repository>
     </distributionManagement>
 
