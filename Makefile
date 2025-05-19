@@ -1,10 +1,11 @@
 .PHONY: help
 
-DOCKERHUB_USERNAME=k8loud
+DOCKERHUB_USERNAME=proman3419
 IMAGE_NAME=themis-executor
 # w.x.y.z, one digit value each
 # when tinkering add -<description> suffix
-VER=0.0.4.4
+VER=0.0.0.1
+# 0.0.0.1 (MoAM-CNEE) is based on 0.0.4.4 (k8loud)
 
 # targets that aren't annotated with ## are not supposed to be run on their own
 
@@ -18,7 +19,7 @@ build-jar: ## build a plain jar
 # GH - GitHub, DH - Dockerhub
 # if 409 Conflict is received it means that a package with version VER is already present on GH
 # remove it manually:
-# https://github.com/k8loud/themis-executor/packages -> Package settings -> Manage versions -> delete concrete version
+# https://github.com/MoAM-CNEE/themis-executor/packages -> Package settings -> Manage versions -> delete concrete version
 # or change VER
 
 build-and-push-final: ## !RUN ONLY ON MASTER! build-and-push-non-final + tag the commit with VER
