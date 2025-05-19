@@ -13,8 +13,8 @@ DEPLOY_NAMESPACE=themis-executor
 help: ## show Makefile contents
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-build: ## build - image accessible through local repository
-	mvn package spring-boot:repackage -DthemisExecutorVersion=$(VER) -DskipTests=true
+build: ## build - package, image accessible through local repository
+	mvn clean install spring-boot:repackage -DthemisExecutorVersion=$(VER) -DskipTests=true
 	docker build -t $(DOCKERHUB_USERNAME)/$(IMAGE_NAME):$(VER) . --build-arg VER=$(VER)
 
 build-jar: ## build a plain jar
