@@ -53,10 +53,6 @@ spec:
                 secretKeyRef:
                   name: themis-secrets-k8s
                   key: KUBERNETES_CLIENT_KEY_DATA
-            - name: DATA_STORAGE_ROOT_PATH
-              value: /tmp
-            - name: DATA_STORAGE_REMOVAL_PERMITTED
-              value: "true"
             - name: MAIL_HOST
               value: poczta.int.pl
             - name: MAIL_PORT
@@ -97,6 +93,10 @@ spec:
               value: customers
             - name: SOCKSHOP_ADDRESSES_URL_SUPPLEMENT
               value: addresses
+            - name: STATEMANAGER_URL
+              value: http://state-manager-svc.state-layer.svc.cluster.local:8000
+            - name: STATEMANAGER_ENTITY_ENDPOINT
+              value: entity
           resources:
             limits:
               cpu: 900m
