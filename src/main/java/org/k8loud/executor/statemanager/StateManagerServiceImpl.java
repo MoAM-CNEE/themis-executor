@@ -25,6 +25,7 @@ import static org.k8loud.executor.util.Util.resultMap;
 @Service
 @AllArgsConstructor
 public class StateManagerServiceImpl implements StateManagerService {
+    private static final String ENTITY_CREATE = "/create";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
     private final StateManagerProperties stateManagerProperties;
@@ -41,7 +42,7 @@ public class StateManagerServiceImpl implements StateManagerService {
         }
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(stateManagerProperties.getUrl() + stateManagerProperties.getEntityEndpoint()))
+                .uri(URI.create(stateManagerProperties.getUrl() + stateManagerProperties.getEntityEndpoint() + ENTITY_CREATE))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();

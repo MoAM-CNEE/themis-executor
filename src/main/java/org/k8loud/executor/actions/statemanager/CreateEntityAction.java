@@ -1,7 +1,6 @@
 package org.k8loud.executor.actions.statemanager;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CustomException;
 import org.k8loud.executor.model.Params;

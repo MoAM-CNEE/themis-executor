@@ -96,7 +96,7 @@ spec:
             - name: STATEMANAGER_URL
               value: http://state-manager-svc.state-layer.svc.cluster.local:8000
             - name: STATEMANAGER_ENTITY_ENDPOINT
-              value: entity
+              value: /entity
           resources:
             limits:
               cpu: 900m
