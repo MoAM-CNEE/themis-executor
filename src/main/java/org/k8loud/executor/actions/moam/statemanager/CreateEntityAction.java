@@ -36,7 +36,7 @@ public class CreateEntityAction extends StateManagerAction {
 
     @Override
     public void unpackParams(Params params) throws ActionException {
-        type = EntityType.fromRepresentation(params.getRequiredParam("type"));
+        type = EntityType.fromName(params.getRequiredParam("type"));
         definition = params.getRequiredParamAsMap("definition");
     }
 

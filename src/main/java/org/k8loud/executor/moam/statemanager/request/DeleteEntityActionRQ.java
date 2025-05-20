@@ -8,14 +8,14 @@ import java.util.Map;
 
 @Setter
 @Getter
-public class CreateEntityActionRQ {
+public class DeleteEntityActionRQ {
     private int changeId;
     private EntityType type;
-    private Map<String, Object> definition;
+    private String filterBy;
 
-    public CreateEntityActionRQ(int changeId, EntityType type, Map<String, Object> definition) {
+    public DeleteEntityActionRQ(int changeId, EntityType type, String filterBy) {
         this.changeId = changeId;
         this.type = type;
-        this.definition = definition;
+        this.filterBy = filterBy;
     }
 }

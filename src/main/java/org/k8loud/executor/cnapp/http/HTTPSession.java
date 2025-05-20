@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.Map;
@@ -24,19 +25,18 @@ import static org.k8loud.executor.exception.code.HTTPExceptionCode.*;
 @Slf4j
 public class HTTPSession {
     private static final String ENCODING = "UTF-8";
-    private static final Gson GSON = new Gson();
     private final HttpClient httpClient;
 
     public HTTPSession() {
         httpClient = HttpClientBuilder.create().build();
     }
 
-    public HttpResponse doGet(String urlBase, String urlSupplement) throws HTTPException {
-        return doGet(urlBase, urlSupplement, Collections.emptyMap());
+    public HttpResponse doGet(String urlBase, String endpoint) throws HTTPException {
+        return doGet(urlBase, endpoint, Collections.emptyMap());
     }
 
-    public HttpResponse doGet(String urlBase, String urlSupplement, Map<String, String> headers) throws HTTPException {
-        final String url = getUrl(urlBase, urlSupplement);
+    public HttpResponse doGet(String urlBase, String endpoint, Map<String, String> headers) throws HTTPException {
+        final String url = getUrl(urlBase, endpoint);
         HttpGet request = new HttpGet(url);
         for (var header : headers.entrySet()) {
             request.addHeader(header.getKey(), header.getValue());
@@ -44,32 +44,44 @@ public class HTTPSession {
         return sendRequest(request);
     }
 
-    public HttpResponse doPost(String urlBase, String urlSupplement, Object paramsObj) throws HTTPException {
-        return doPost(urlBase, urlSupplement, paramsObj, FieldNamingPolicy.IDENTITY);
+    public HttpResponse doPost(String urlBase, String endpoint, Object paramsObj) throws HTTPException {
+        return doPost(urlBase, endpoint, paramsObj, FieldNamingPolicy.IDENTITY);
     }
 
-    public HttpResponse doPost(String urlBase, String urlSupplement, Object paramsObj,
+    public HttpResponse doPost(String urlBase, String endpoint, Object paramsObj,
                                FieldNamingPolicy fieldNamingPolicy) throws HTTPException {
-        return doEntityRequest(new HttpPost(getUrl(urlBase, urlSupplement)), paramsObj, fieldNamingPolicy);
+        return doEntityRequest(new HttpPost(getUrl(urlBase, endpoint)), paramsObj, fieldNamingPolicy);
     }
 
-    public HttpResponse doPut(String urlBase, String urlSupplement, Object paramsObj) throws HTTPException {
-        return doPut(urlBase, urlSupplement, paramsObj, FieldNamingPolicy.IDENTITY);
+    public HttpResponse doPut(String urlBase, String endpoint, Object paramsObj) throws HTTPException {
+        return doPut(urlBase, endpoint, paramsObj, FieldNamingPolicy.IDENTITY);
     }
 
-    public HttpResponse doPut(String urlBase, String urlSupplement, Object paramsObj,
+    public HttpResponse doPut(String urlBase, String endpoint, Object paramsObj,
                               FieldNamingPolicy fieldNamingPolicy) throws HTTPException {
-        return doEntityRequest(new HttpPut(getUrl(urlBase, urlSupplement)), paramsObj, fieldNamingPolicy);
+        return doEntityRequest(new HttpPut(getUrl(urlBase, endpoint)), paramsObj, fieldNamingPolicy);
     }
 
-    public HttpResponse doDelete(String urlBase, String urlSupplement, Object paramsObj) throws HTTPException {
-        return doDelete(urlBase, urlSupplement, paramsObj, FieldNamingPolicy.IDENTITY);
-    }
-
-    public HttpResponse doDelete(String urlBase, String urlSupplement, Object paramsObj,
-                                 FieldNamingPolicy fieldNamingPolicy) throws HTTPException {
-        HttpDelete request = new HttpDelete(getUrl(urlBase, urlSupplement));
+    public HttpResponse doDelete(String urlBase, String endpoint) throws HTTPException {
+        final String url = getUrl(urlBase, endpoint);
+        HttpDelete request = new HttpDelete(url);
         return sendRequest(request);
+    }
+
+    public HttpResponse doDelete(String urlBase, String endpoint, Object paramsObj) throws HTTPException {
+        return doDelete(urlBase, endpoint, paramsObj, FieldNamingPolicy.IDENTITY);
+    }
+
+    public HttpResponse doDelete(String urlBase, String endpoint, Object paramsObj,
+                                 FieldNamingPolicy fieldNamingPolicy) throws HTTPException {
+        HttpEntityEnclosingRequestBase httpDeleteWithBody = new HttpEntityEnclosingRequestBase() {
+            @Override
+            public String getMethod() {
+                return "DELETE";
+            }
+        };
+        httpDeleteWithBody.setURI(URI.create(getUrl(urlBase, endpoint)));
+        return doEntityRequest(httpDeleteWithBody, paramsObj, fieldNamingPolicy);
     }
 
     private HttpResponse doEntityRequest(HttpEntityEnclosingRequestBase request, Object paramsObj,
@@ -85,12 +97,6 @@ public class HTTPSession {
         } catch (UnsupportedEncodingException e) {
             throw new HTTPException(e, UNSUPPORTED_ENCODING);
         }
-    }
-
-    public HttpResponse doDelete(String urlBase, String urlSupplement) throws HTTPException {
-        final String url = getUrl(urlBase, urlSupplement);
-        HttpDelete request = new HttpDelete(url);
-        return sendRequest(request);
     }
 
     public HttpResponse sendRequest(HttpRequestBase request) throws HTTPException {

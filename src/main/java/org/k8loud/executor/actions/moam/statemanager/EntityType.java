@@ -1,23 +1,13 @@
 package org.k8loud.executor.actions.moam.statemanager;
 
 public enum EntityType {
-    RULE("RULE"),
-    METRIC("METRIC"),
-    ENVIRONMENT_ENTITY("ENVIRONMENT_ENTITY");
+    RULE,
+    METRIC,
+    ENVIRONMENT_ENTITY;
 
-    private final String representation;
-
-    EntityType(String representation) {
-        this.representation = representation;
-    }
-
-    public String getRepresentation() {
-        return representation;
-    }
-
-    public static EntityType fromRepresentation(String value) {
+    public static EntityType fromName(String value) {
         for (EntityType type : EntityType.values()) {
-            if (type.getRepresentation().equalsIgnoreCase(value)) {
+            if (type.name().equalsIgnoreCase(value)) {
                 return type;
             }
         }
