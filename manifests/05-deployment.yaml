@@ -19,10 +19,10 @@ spec:
       serviceAccountName: themis-executor
       containers:
         - name: executor
-          image: proman3419/themis-executor:0.0.0.0-add-modify-state-action
-#          imagePullPolicy: "IfNotPresent"
+          image: proman3419/themis-executor:0.0.0.1
+          imagePullPolicy: "IfNotPresent"
 #          imagePullPolicy: "Always"
-          imagePullPolicy: "Never" # local repository
+#          imagePullPolicy: "Never" # local repository
           env:
             - name: DATA_STORAGE_ROOT_PATH
               value: /tmp
