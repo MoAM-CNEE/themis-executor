@@ -1,4 +1,4 @@
-package org.k8loud.executor.actions.statemanager;
+package org.k8loud.executor.actions.moam.statemanager;
 
 public enum EntityType {
     RULE("RULE"),

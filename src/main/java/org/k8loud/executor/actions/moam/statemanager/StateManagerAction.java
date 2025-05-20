@@ -1,13 +1,13 @@
-package org.k8loud.executor.actions.statemanager;
+package org.k8loud.executor.actions.moam.statemanager;
 
 import lombok.AllArgsConstructor;
-import org.k8loud.executor.actions.Action;
+import org.k8loud.executor.actions.moam.MoAMAction;
 import org.k8loud.executor.exception.ActionException;
+import org.k8loud.executor.moam.statemanager.StateManagerService;
 import org.k8loud.executor.model.Params;
-import org.k8loud.executor.statemanager.StateManagerService;
 
 @AllArgsConstructor
-public abstract class StateManagerAction extends Action {
+public abstract class StateManagerAction extends MoAMAction {
     protected StateManagerService stateManagerService;
 
     public StateManagerAction(Params params, StateManagerService stateManagerService) throws ActionException {

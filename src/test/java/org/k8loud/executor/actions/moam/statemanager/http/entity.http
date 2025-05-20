@@ -1,0 +1,12 @@
+### create entity
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "moam.statemanager",
+  "actionName": "CreateEntityAction",
+  "params": {
+    "type": "ENVIRONMENT_ENTITY",
+    "definition": "{ \"name\": \"entity-test\", \"type\": \"ENVIRONMENT_ENTITY\" }"
+  }
+}

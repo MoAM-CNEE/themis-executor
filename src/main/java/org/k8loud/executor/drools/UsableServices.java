@@ -10,7 +10,7 @@ import org.k8loud.executor.cnapp.sockshop.SockShopService;
 import org.k8loud.executor.command.CommandExecutionService;
 import org.k8loud.executor.kubernetes.KubernetesService;
 import org.k8loud.executor.openstack.OpenstackService;
-import org.k8loud.executor.statemanager.StateManagerService;
+import org.k8loud.executor.moam.statemanager.StateManagerService;
 import org.springframework.stereotype.Component;
 
 @Getter

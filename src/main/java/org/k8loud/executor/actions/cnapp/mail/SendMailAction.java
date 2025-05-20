@@ -8,6 +8,7 @@ import org.k8loud.executor.model.Params;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.k8loud.executor.util.Util.resultMap;
 
@@ -26,7 +27,12 @@ public class SendMailAction extends MailAction {
 
     @Override
     protected void unpackAdditionalParams(Params params) {
-        this.imageTitleToPath = params.getOptionalParamAsMap("imageTitleToPath", new HashMap<>());
+        Map<String, Object> rawMap = params.getOptionalParamAsMap("imageTitleToPath", new HashMap<>());
+        this.imageTitleToPath = rawMap.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue() != null ? entry.getValue().toString() : null
+                ));
     }
 
     @Override
