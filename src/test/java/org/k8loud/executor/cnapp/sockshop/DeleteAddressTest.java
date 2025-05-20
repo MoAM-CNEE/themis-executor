@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 public class DeleteAddressTest extends SockShopBaseTest {
     @Override
     protected void additionalSetUp() throws HTTPException, IOException {
-        when(sockShopPropertiesMock.getAddressesUrlSupplement()).thenReturn(SOCKSHOP_ADDRESSES_URL_SUPPLEMENT);
+        when(sockShopPropertiesMock.getAddressesEndpoint()).thenReturn(SOCKSHOP_ADDRESSES_ENDPOINT);
         mockAuth();
     }
 
@@ -32,7 +32,7 @@ public class DeleteAddressTest extends SockShopBaseTest {
         Map<String, Object> resultMap = sockShopService.deleteAddress(APPLICATION_URL, USERNAME, PASSWORD, ID);
 
         // then
-        verify(httpSessionMock).doDelete(eq(APPLICATION_URL), eq(SOCKSHOP_ADDRESSES_URL_SUPPLEMENT + "/" + ID));
+        verify(httpSessionMock).doDelete(eq(APPLICATION_URL), eq(SOCKSHOP_ADDRESSES_ENDPOINT + "/" + ID));
         assertResponseContent(resultMap);
     }
 

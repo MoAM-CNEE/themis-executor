@@ -15,14 +15,11 @@ import org.k8loud.executor.util.Util;
 import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.k8loud.executor.exception.code.CNAppExceptionCode.FAILED_TO_CONVERT_RESPONSE_ENTITY;
 import static org.k8loud.executor.exception.code.CNAppExceptionCode.SOCK_SHOP_NOTIFY_CUSTOMERS_FAILED;
-import static org.k8loud.executor.exception.code.HTTPExceptionCode.HTTP_RESPONSE_STATUS_CODE_NOT_SUCCESSFUL;
 import static org.k8loud.executor.util.Util.getAllRegexMatches;
 import static org.k8loud.executor.util.Util.resultMap;
 
@@ -42,9 +39,9 @@ public class SockShopServiceImpl implements SockShopService {
             throws CNAppException, ValidationException, HTTPException {
         log.info("Registering user {} with email {}", username, email);
         HttpResponse response = httpService.createSession().doPost(applicationUrl,
-                sockShopProperties.getRegisterUserUrlSupplement(),
+                sockShopProperties.getRegisterUserEndpoint(),
                 RegisterUserParams.builder().username(username).password(password).email(email).build());
-        String responseContent = handleResponse(response);
+        String responseContent = httpService.handleResponse(response);
         return createResultMap(String.format("Registered user %s with email %s", username, email), responseContent);
     }
 
@@ -55,8 +52,8 @@ public class SockShopServiceImpl implements SockShopService {
             ValidationException, HTTPException {
         log.info("Deleting user with id {}", userId);
         HttpResponse response = httpService.createSession().doDelete(applicationUrl,
-                String.format("%s/%s", sockShopProperties.getCustomersUrlSupplement(), userId));
-        String responseContent = handleResponse(response);
+                String.format("%s/%s", sockShopProperties.getCustomersEndpoint(), userId));
+        String responseContent = httpService.handleResponse(response);
         return createResultMap(String.format("Deleted user with id %s", userId), responseContent);
     }
 
@@ -71,9 +68,9 @@ public class SockShopServiceImpl implements SockShopService {
         log.info("Creating address with params {}", createAddressParams);
         HTTPSession session = httpService.createSession();
         authSession(session, applicationUrl, username, password);
-        HttpResponse response = session.doPost(applicationUrl, sockShopProperties.getAddressesUrlSupplement(),
+        HttpResponse response = session.doPost(applicationUrl, sockShopProperties.getAddressesEndpoint(),
                 createAddressParams);
-        String responseContent = handleResponse(response);
+        String responseContent = httpService.handleResponse(response);
         return createResultMap(String.format("Created address with params %s", createAddressParams),
                 responseContent);
     }
@@ -87,8 +84,8 @@ public class SockShopServiceImpl implements SockShopService {
         HTTPSession session = httpService.createSession();
         authSession(session, applicationUrl, username, password);
         HttpResponse response = session.doDelete(applicationUrl, String.format("%s/%s",
-                sockShopProperties.getAddressesUrlSupplement(), addressId));
-        String responseContent = handleResponse(response);
+                sockShopProperties.getAddressesEndpoint(), addressId));
+        String responseContent = httpService.handleResponse(response);
         return createResultMap(String.format("Deleted address with id %s", addressId),
                 responseContent);
     }
@@ -105,8 +102,8 @@ public class SockShopServiceImpl implements SockShopService {
                 senderDisplayName, subject, content, imagesUrls);
 
         HttpResponse response = httpService.createSession().doGet(applicationUrl,
-                sockShopProperties.getCustomersUrlSupplement());
-        String responseContent = handleResponse(response);
+                sockShopProperties.getCustomersEndpoint());
+        String responseContent = httpService.handleResponse(response);
 
         final String MAIL_PATTERN = "\"username\":\"([a-zA-Z0-9]+@[a-zA-Z0-9.]+)\"";
         List<String> receivers = getAllRegexMatches(MAIL_PATTERN, responseContent, 1);
@@ -148,25 +145,13 @@ public class SockShopServiceImpl implements SockShopService {
                         "content = '%s', imageUrls = %s", senderDisplayName, subject, content, imagesUrls));
     }
 
-    private String handleResponse(HttpResponse response) throws HTTPException, CNAppException {
-        final int statusCode = response.getStatusLine().getStatusCode();
-        if (!httpService.isStatusCodeSuccessful(statusCode)) {
-            throw new HTTPException(String.valueOf(statusCode), HTTP_RESPONSE_STATUS_CODE_NOT_SUCCESSFUL);
-        }
-        try {
-            return httpService.getResponseEntityAsString(response);
-        } catch (IOException e) {
-            throw new CNAppException(e.toString(), FAILED_TO_CONVERT_RESPONSE_ENTITY);
-        }
-    }
-
     private void authSession(HTTPSession session, String applicationUrl, String username, String password)
             throws HTTPException, CNAppException {
         // url: "login", type: "GET"
         // xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password))
-        HttpResponse response = session.doGet(applicationUrl, sockShopProperties.getLoginUserUrlSupplement(),
+        HttpResponse response = session.doGet(applicationUrl, sockShopProperties.getLoginUserEndpoint(),
                 addAuthHeader(new HashMap<>(), username, password));
-        handleResponse(response);
+        httpService.handleResponse(response);
     }
 
     private Map<String, String> addAuthHeader(Map<String, String> headers, String username, String password) {

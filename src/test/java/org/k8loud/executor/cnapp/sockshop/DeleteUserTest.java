@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 public class DeleteUserTest extends SockShopBaseTest {
     @Override
     public void additionalSetUp() {
-        when(sockShopPropertiesMock.getCustomersUrlSupplement()).thenReturn(SOCKSHOP_CUSTOMERS_URL_SUPPLEMENT);
+        when(sockShopPropertiesMock.getCustomersEndpoint()).thenReturn(SOCKSHOP_CUSTOMERS_ENDPOINT);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class DeleteUserTest extends SockShopBaseTest {
         Map<String, Object> resultMap = sockShopService.deleteUser(APPLICATION_URL, ID);
 
         // then
-        verify(httpSessionMock).doDelete(eq(APPLICATION_URL), eq(SOCKSHOP_CUSTOMERS_URL_SUPPLEMENT + "/" + ID));
+        verify(httpSessionMock).doDelete(eq(APPLICATION_URL), eq(SOCKSHOP_CUSTOMERS_ENDPOINT + "/" + ID));
         assertResponseContent(resultMap);
     }
 

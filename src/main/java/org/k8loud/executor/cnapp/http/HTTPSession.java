@@ -1,13 +1,12 @@
 package org.k8loud.executor.cnapp.http;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.k8loud.executor.exception.HTTPException;
@@ -46,17 +45,46 @@ public class HTTPSession {
     }
 
     public HttpResponse doPost(String urlBase, String urlSupplement, Object paramsObj) throws HTTPException {
-        final String url = getUrl(urlBase, urlSupplement);
-        HttpPost request = new HttpPost(url);
-        StringEntity params = null;
+        return doPost(urlBase, urlSupplement, paramsObj, FieldNamingPolicy.IDENTITY);
+    }
+
+    public HttpResponse doPost(String urlBase, String urlSupplement, Object paramsObj,
+                               FieldNamingPolicy fieldNamingPolicy) throws HTTPException {
+        return doEntityRequest(new HttpPost(getUrl(urlBase, urlSupplement)), paramsObj, fieldNamingPolicy);
+    }
+
+    public HttpResponse doPut(String urlBase, String urlSupplement, Object paramsObj) throws HTTPException {
+        return doPut(urlBase, urlSupplement, paramsObj, FieldNamingPolicy.IDENTITY);
+    }
+
+    public HttpResponse doPut(String urlBase, String urlSupplement, Object paramsObj,
+                              FieldNamingPolicy fieldNamingPolicy) throws HTTPException {
+        return doEntityRequest(new HttpPut(getUrl(urlBase, urlSupplement)), paramsObj, fieldNamingPolicy);
+    }
+
+    public HttpResponse doDelete(String urlBase, String urlSupplement, Object paramsObj) throws HTTPException {
+        return doDelete(urlBase, urlSupplement, paramsObj, FieldNamingPolicy.IDENTITY);
+    }
+
+    public HttpResponse doDelete(String urlBase, String urlSupplement, Object paramsObj,
+                                 FieldNamingPolicy fieldNamingPolicy) throws HTTPException {
+        HttpDelete request = new HttpDelete(getUrl(urlBase, urlSupplement));
+        return sendRequest(request);
+    }
+
+    private HttpResponse doEntityRequest(HttpEntityEnclosingRequestBase request, Object paramsObj,
+                                         FieldNamingPolicy fieldNamingPolicy) throws HTTPException {
         try {
-            params = new StringEntity(GSON.toJson(paramsObj));
+            StringEntity params = new StringEntity(new GsonBuilder()
+                    .setFieldNamingPolicy(fieldNamingPolicy)
+                    .create()
+                    .toJson(paramsObj));
+            request.addHeader("content-type", "application/json");
+            request.setEntity(params);
+            return sendRequest(request);
         } catch (UnsupportedEncodingException e) {
             throw new HTTPException(e, UNSUPPORTED_ENCODING);
         }
-        request.addHeader("content-type", "application/json");
-        request.setEntity(params);
-        return sendRequest(request);
     }
 
     public HttpResponse doDelete(String urlBase, String urlSupplement) throws HTTPException {
@@ -101,7 +129,7 @@ public class HTTPSession {
         return params.toString();
     }
 
-    private String getUrl(String urlBase, String urlSupplement) {
-        return String.format("%s/%s", urlBase, urlSupplement);
+    private String getUrl(String urlBase, String endpoint) {
+        return String.format("%s/%s", urlBase, endpoint);
     }
 }

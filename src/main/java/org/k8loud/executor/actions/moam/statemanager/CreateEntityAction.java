@@ -2,6 +2,7 @@ package org.k8loud.executor.actions.moam.statemanager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.CustomException;
 import org.k8loud.executor.moam.statemanager.StateManagerService;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 import static org.k8loud.executor.exception.code.ActionExceptionCode.PARSING_PARAMS_FAILURE;
 
+@Slf4j
 public class CreateEntityAction extends StateManagerAction {
     private EntityType type;
     private Map<String, Object> definition;
@@ -20,7 +22,7 @@ public class CreateEntityAction extends StateManagerAction {
     }
 
     @Builder
-    public CreateEntityAction(StateManagerService stateManagerService, EntityType type, String definition) throws ActionException {
+    public CreateEntityAction(StateManagerService stateManagerService, EntityType type, String definition) {
         this(stateManagerService, type, parseDefinition(definition));
     }
 
@@ -43,12 +45,13 @@ public class CreateEntityAction extends StateManagerAction {
         return stateManagerService.createEntity(type, definition);
     }
 
-    private static Map<String, Object> parseDefinition(String definitionJsonString) throws ActionException {
+    private static Map<String, Object> parseDefinition(String definitionJsonString) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(definitionJsonString, Map.class);
         } catch (Exception e) {
-            throw new ActionException(PARSING_PARAMS_FAILURE);
+            log.error(PARSING_PARAMS_FAILURE.name());
+            return null;
         }
     }
 }

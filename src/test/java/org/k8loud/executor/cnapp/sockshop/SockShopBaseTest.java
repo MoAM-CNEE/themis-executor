@@ -20,16 +20,18 @@ import java.io.InputStream;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.k8loud.executor.exception.code.HTTPExceptionCode.FAILED_TO_CONVERT_RESPONSE_ENTITY;
+import static org.k8loud.executor.exception.code.HTTPExceptionCode.HTTP_RESPONSE_STATUS_CODE_NOT_SUCCESSFUL;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class SockShopBaseTest {
     protected static final String APPLICATION_URL = "http://localhost:8082";
-    protected static final String SOCKSHOP_LOGIN_URL_SUPPLEMENT = "login";
-    protected static final String REGISTER_USER_URL_SUPPLEMENT = "register";
-    protected static final String SOCKSHOP_CUSTOMERS_URL_SUPPLEMENT = "customers";
-    protected static final String SOCKSHOP_ADDRESSES_URL_SUPPLEMENT = "addresses";
+    protected static final String SOCKSHOP_LOGIN_ENDPOINT = "login";
+    protected static final String REGISTER_USER_ENDPOINT = "register";
+    protected static final String SOCKSHOP_CUSTOMERS_ENDPOINT = "customers";
+    protected static final String SOCKSHOP_ADDRESSES_ENDPOINT = "addresses";
 
     protected static final String USERNAME = "user994";
     protected static final String PASSWORD = "pass994";
@@ -58,10 +60,23 @@ public class SockShopBaseTest {
     public void setUp() throws IOException, HTTPException {
         sockShopService = new SockShopServiceImpl(sockShopPropertiesMock, httpServiceMock, mailServiceMock,
                 dataStorageServiceMock);
+        // Copy-paste implementations from HTTPServiceImpl
         doAnswer(i -> {
             int statusCode = i.getArgument(0);
             return 200 <= statusCode && statusCode < 300;
         }).when(httpServiceMock).isStatusCodeSuccessful(anyInt());
+        doAnswer(i -> {
+            HttpResponse response = i.getArgument(0);
+            final int statusCode = response.getStatusLine().getStatusCode();
+            if (!httpServiceMock.isStatusCodeSuccessful(statusCode)) {
+                throw new HTTPException(String.valueOf(statusCode), HTTP_RESPONSE_STATUS_CODE_NOT_SUCCESSFUL);
+            }
+            try {
+                return httpServiceMock.getResponseEntityAsString(response);
+            } catch (IOException e) {
+                throw new HTTPException(e.toString(), FAILED_TO_CONVERT_RESPONSE_ENTITY);
+            }
+        }).when(httpServiceMock).handleResponse(any(HttpResponse.class));
         when(httpServiceMock.createSession()).thenReturn(httpSessionMock);
         additionalSetUp();
     }
@@ -75,14 +90,15 @@ public class SockShopBaseTest {
     }
 
     protected void mockAuth() throws HTTPException, IOException {
-        when(sockShopPropertiesMock.getLoginUserUrlSupplement()).thenReturn(SOCKSHOP_LOGIN_URL_SUPPLEMENT);
-        when(httpSessionMock.doGet(eq(APPLICATION_URL), eq(SOCKSHOP_LOGIN_URL_SUPPLEMENT), any(Map.class)))
+        when(sockShopPropertiesMock.getLoginUserEndpoint()).thenReturn(SOCKSHOP_LOGIN_ENDPOINT);
+        when(httpSessionMock.doGet(eq(APPLICATION_URL), eq(SOCKSHOP_LOGIN_ENDPOINT), any(Map.class)))
                 .thenReturn(successfulResponseMock);
         mockSuccessfulResponse();
     }
 
     protected void mockSuccessfulResponse() throws IOException {
         mockResponse(successfulResponseMock, 200);
+        // Copy-paste implementation from HTTPServiceImpl
         doAnswer(i -> {
             HttpResponse response = i.getArgument(0);
             return EntityUtils.toString(response.getEntity());

@@ -45,6 +45,7 @@ build-and-push-docker:
 	docker push $(FULL_IMAGE_NAME)
 
 deploy: ## deploy to the Kubernetes cluster
+	kubectl apply -f manifests/
 	kubectl -n $(DEPLOY_NAMESPACE) get secret themis-secrets-k8s >/dev/null 2>&1 || \
 	kubectl -n $(DEPLOY_NAMESPACE) create secret generic themis-secrets-k8s \
 		--from-file=KUBERNETES_CA_CERT_DATA=secrets/ca.crt \
@@ -54,6 +55,5 @@ deploy: ## deploy to the Kubernetes cluster
 	kubectl -n $(DEPLOY_NAMESPACE) create secret generic themis-secrets \
 		--from-file=MAIL_PASSWORD=secrets/mail-password.txt \
 		--from-file=OPENSTACK_PASSWORD=secrets/openstack-password.txt
-	kubectl apply -f manifests/
 
 .DEFAULT_GOAL := help

@@ -7,4 +7,6 @@ import java.util.Map;
 
 public interface StateManagerService {
     Map<String, Object> createEntity(EntityType type, Map<String, Object> definition) throws HTTPException;
+
+    Map<String, Object> updateEntity(EntityType type, String filterBy, Map<String, String> lambdas) throws HTTPException;
 }

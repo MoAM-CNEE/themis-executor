@@ -85,18 +85,18 @@ spec:
               value: "true"
             - name: SERVICE_ENABLED_DROOLS
               value: "true"
-            - name: SOCKSHOP_LOGIN_USER_URL_SUPPLEMENT
+            - name: SOCKSHOP_LOGIN_USER_ENDPOINT
               value: login
-            - name: SOCKSHOP_REGISTER_USER_URL_SUPPLEMENT
+            - name: SOCKSHOP_REGISTER_USER_ENDPOINT
               value: register
-            - name: SOCKSHOP_CUSTOMERS_URL_SUPPLEMENT
+            - name: SOCKSHOP_CUSTOMERS_ENDPOINT
               value: customers
-            - name: SOCKSHOP_ADDRESSES_URL_SUPPLEMENT
+            - name: SOCKSHOP_ADDRESSES_ENDPOINT
               value: addresses
             - name: STATEMANAGER_URL
               value: http://state-manager-svc.state-layer.svc.cluster.local:8000
             - name: STATEMANAGER_ENTITY_ENDPOINT
-              value: /entity
+              value: entity
           resources:
             limits:
               cpu: 900m

@@ -31,7 +31,7 @@ public class CreateAddressTest extends SockShopBaseTest {
 
     @Override
     protected void additionalSetUp() throws HTTPException, IOException {
-        when(sockShopPropertiesMock.getAddressesUrlSupplement()).thenReturn(SOCKSHOP_ADDRESSES_URL_SUPPLEMENT);
+        when(sockShopPropertiesMock.getAddressesEndpoint()).thenReturn(SOCKSHOP_ADDRESSES_ENDPOINT);
         mockAuth();
     }
 
@@ -45,7 +45,7 @@ public class CreateAddressTest extends SockShopBaseTest {
                 CITY, POSTCODE, STREET, NUMBER);
 
         // then
-        verify(httpSessionMock).doPost(eq(APPLICATION_URL), eq(SOCKSHOP_ADDRESSES_URL_SUPPLEMENT),
+        verify(httpSessionMock).doPost(eq(APPLICATION_URL), eq(SOCKSHOP_ADDRESSES_ENDPOINT),
                 createAddressParamsCaptor.capture());
         final CreateAddressParams createAddressParams = createAddressParamsCaptor.getValue();
         assertEquals(ID, createAddressParams.getId());

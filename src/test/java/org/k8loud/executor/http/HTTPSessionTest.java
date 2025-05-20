@@ -34,7 +34,7 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 public class HTTPSessionTest {
     private static final String URL_BASE = "http://localhost:8082";
-    private static final String URL_SUPPLEMENT = "resource";
+    private static final String ENDPOINT = "resource";
     private static final HttpResponse RESPONSE = new BasicHttpResponse(new BasicStatusLine(
             new ProtocolVersion("HTTP", 1, 1), 200, "OK"));
 
@@ -57,13 +57,13 @@ public class HTTPSessionTest {
                 "content-type", "application/json");
 
         // when
-        httpSession.doGet(URL_BASE, URL_SUPPLEMENT, headers);
+        httpSession.doGet(URL_BASE, ENDPOINT, headers);
 
         // then
         verify(httpSession).sendRequest(requestCaptor.capture());
         final HttpGet request = (HttpGet) requestCaptor.getValue();
 
-        assertEquals(URL_BASE + "/" + URL_SUPPLEMENT, request.getURI().toString());
+        assertEquals(URL_BASE + "/" + ENDPOINT, request.getURI().toString());
         for (var header : headers.entrySet()) {
             assertHeader(request, header.getKey(), header.getValue());
         }
@@ -72,13 +72,13 @@ public class HTTPSessionTest {
     @Test
     void testDoGetWithoutHeaders() throws HTTPException {
         // when
-        httpSession.doGet(URL_BASE, URL_SUPPLEMENT);
+        httpSession.doGet(URL_BASE, ENDPOINT);
 
         // then
         verify(httpSession).sendRequest(requestCaptor.capture());
         final HttpGet request = (HttpGet) requestCaptor.getValue();
 
-        assertEquals(URL_BASE + "/" + URL_SUPPLEMENT, request.getURI().toString());
+        assertEquals(URL_BASE + "/" + ENDPOINT, request.getURI().toString());
         assertEquals(0, request.getAllHeaders().length);
     }
 
@@ -89,13 +89,13 @@ public class HTTPSessionTest {
                 .email("em@il.com").build();
 
         // when
-        httpSession.doPost(URL_BASE, URL_SUPPLEMENT, paramsObj);
+        httpSession.doPost(URL_BASE, ENDPOINT, paramsObj);
 
         // then
         verify(httpSession).sendRequest(requestCaptor.capture());
         final HttpPost request = (HttpPost) requestCaptor.getValue();
 
-        assertEquals(URL_BASE + "/" + URL_SUPPLEMENT, request.getURI().toString());
+        assertEquals(URL_BASE + "/" + ENDPOINT, request.getURI().toString());
         assertHeader(request, "content-type", "application/json");
         assertEquals(new Gson().toJson(paramsObj),
                 IOUtils.toString(request.getEntity().getContent(), StandardCharsets.UTF_8));
@@ -104,13 +104,13 @@ public class HTTPSessionTest {
     @Test
     void testDoDelete() throws HTTPException {
         // when
-        httpSession.doDelete(URL_BASE, URL_SUPPLEMENT);
+        httpSession.doDelete(URL_BASE, ENDPOINT);
 
         // then
         verify(httpSession).sendRequest(requestCaptor.capture());
         final HttpDelete request = (HttpDelete) requestCaptor.getValue();
 
-        assertEquals(URL_BASE + "/" + URL_SUPPLEMENT, request.getURI().toString());
+        assertEquals(URL_BASE + "/" + ENDPOINT, request.getURI().toString());
     }
 
     private void assertHeader(HttpRequestBase request, String headerName, String expectedValue) {
