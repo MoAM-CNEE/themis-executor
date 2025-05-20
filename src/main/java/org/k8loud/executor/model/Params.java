@@ -63,8 +63,12 @@ public class Params extends HashMap<String, String> {
                 .orElse(defaultValue);
     }
 
-    public Map<String, String> getOptionalParamAsMap(String param, Map<String, String> defaultValue) {
-        Map<String, String> result = new HashMap<>();
+    public Map<String, Object> getRequiredParamAsMap(String param) {
+        return getOptionalParamAsMap(getRequiredParam(param), new HashMap<>());
+    }
+
+    public Map<String, Object> getOptionalParamAsMap(String param, Map<String, Object> defaultValue) {
+        Map<String, Object> result = new HashMap<>();
         getOptionalParamAsListOfStrings(param, new ArrayList<>()).stream()
                 .map(kvps -> List.of(kvps.split("=")))
                 .forEach(kvp -> result.put(kvp.get(0), kvp.get(1)));

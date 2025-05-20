@@ -27,7 +27,7 @@ public class RegisterUserTest extends SockShopBaseTest {
 
     @Override
     protected void additionalSetUp() {
-        when(sockShopPropertiesMock.getRegisterUserUrlSupplement()).thenReturn(REGISTER_USER_URL_SUPPLEMENT);
+        when(sockShopPropertiesMock.getRegisterUserEndpoint()).thenReturn(REGISTER_USER_ENDPOINT);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class RegisterUserTest extends SockShopBaseTest {
         Map<String, Object> resultMap = sockShopService.registerUser(APPLICATION_URL, USERNAME, PASSWORD, EMAIL);
 
         // then
-        verify(httpSessionMock).doPost(eq(APPLICATION_URL), eq(REGISTER_USER_URL_SUPPLEMENT),
+        verify(httpSessionMock).doPost(eq(APPLICATION_URL), eq(REGISTER_USER_ENDPOINT),
                 registerUserParamsCaptor.capture());
         final RegisterUserParams registerUserParams = registerUserParamsCaptor.getValue();
         assertEquals(USERNAME, registerUserParams.getUsername());

@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "sockshop")
 public class SockShopProperties {
-    private String loginUserUrlSupplement = "login";
-    private String registerUserUrlSupplement = "register";
-    private String customersUrlSupplement = "customers";
-    private String addressesUrlSupplement = "addresses";
+    private String loginUserEndpoint = "/login";
+    private String registerUserEndpoint = "/register";
+    private String customersEndpoint = "/customers";
+    private String addressesEndpoint = "/addresses";
 }

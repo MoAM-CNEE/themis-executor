@@ -10,6 +10,7 @@ import org.k8loud.executor.cnapp.sockshop.SockShopService;
 import org.k8loud.executor.command.CommandExecutionService;
 import org.k8loud.executor.kubernetes.KubernetesService;
 import org.k8loud.executor.openstack.OpenstackService;
+import org.k8loud.executor.moam.statemanager.StateManagerService;
 import org.springframework.stereotype.Component;
 
 @Getter
@@ -22,7 +23,7 @@ public class UsableServices {
     private final OpenstackService openstackService;
     private final MySQLService mySQLService;
     private final MongoService mongoService;
-
     private final HTTPService httpService;
     private final MailService mailService;
+    private final StateManagerService stateManagerService;
 }
