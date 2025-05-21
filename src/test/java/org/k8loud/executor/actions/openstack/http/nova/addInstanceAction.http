@@ -40,9 +40,11 @@ Content-Type: application/json
   "actionName": "AddInstanceAction",
   "params": {
     "region": "RegionOne",
-    "name": "kube-worker-auto-scaled",
+    "name": "kube-worker-3",
     "imageId": "70a1dc73-f794-439f-8dd2-9e5cf8a73d5a",
     "flavorId": "414a6a89-57c3-4331-9a05-0a53fc9a7d02",
+    "keypairName": "default",
+    "networkIds": "82793ea1-5980-49a5-9c38-a5bd9a19b350",
     "userData": "#!/bin/bash\nsudo apt -y install nmap\nsudo cp /home/ubuntu/kubernetes-lab-setup/configs/join_cluster.service /etc/systemd/system/join_cluster.service\nchmod +x /home/ubuntu/kubernetes-lab-setup/scripts/kube_setup/join_cluster.sh\nsudo systemctl enable join_cluster.service\nsudo systemctl start join_cluster.service"
   }
 }

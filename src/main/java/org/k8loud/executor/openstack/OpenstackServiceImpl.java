@@ -89,14 +89,15 @@ public class OpenstackServiceImpl implements OpenstackService {
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "CREATE_SERVER_FAILED")
     public Map<String, Object> createServers(String region, String name, String imageId, String flavorId,
-                                             String keypairName, String securityGroup, String userData, int count,
-                                             int waitActiveSec) throws OpenstackException, ValidationException {
+                                             String keypairName, String securityGroup, List<String> networkIds,
+                                             String userData, int count, int waitActiveSec)
+            throws OpenstackException, ValidationException {
         OSClientV3 client = openstackClientWithRegion(region);
         Image image = openstackGlanceService.getImage(imageId, client);
         Flavor flavor = openstackNovaService.getFlavor(flavorId, client);
 
         List<String> serverIds = openstackNovaService.createServers(name, image, flavor, keypairName, securityGroup,
-                userData, count, waitActiveSec, clientSupplier(region));
+                networkIds, userData, count, waitActiveSec, clientSupplier(region));
         String result = String.format("Creating %d instances named '%s' finished with success", count, name);
         return resultMap(result, Map.of("serverIds", serverIds));
     }

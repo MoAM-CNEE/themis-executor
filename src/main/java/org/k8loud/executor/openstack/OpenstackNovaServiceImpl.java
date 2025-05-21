@@ -108,7 +108,7 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
 
     @Override
     public String createServerSnapshot(Server server, String snapshotName,
-                                     OSClient.OSClientV3 client) throws OpenstackException {
+                                       OSClient.OSClientV3 client) throws OpenstackException {
         log.debug("Creating snapshot with name {} on server {}", snapshotName, server.getName());
         String snapshotId = client.compute().servers().createSnapshot(server.getId(), snapshotName);
 
@@ -146,8 +146,8 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
 
     @Override
     public List<String> createServers(String name, Image image, Flavor flavor, String keypairName, String securityGroup,
-                                             String userData, int count, int waitActiveSec,
-                                             Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException {
+                                      List<String> networkIds, String userData, int count, int waitActiveSec,
+                                      Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException {
         log.debug("Creating servers with name prefix '{}'", name);
 
         List<?> results = IntStream.rangeClosed(1, count)
@@ -155,7 +155,7 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
                 .mapToObj(i -> {
                     try {
                         return spawnServer(Util.nameWithUuid(name), flavor, image, keypairName,
-                                securityGroup, userData, waitActiveSec, clientSupplier.get());
+                                securityGroup, userData, networkIds, waitActiveSec, clientSupplier.get());
                     } catch (OpenstackException e) {
                         return e;
                     }
@@ -189,7 +189,7 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
     }
 
     private Server spawnServer(String name, Flavor flavor, Image image, String keypairName, String securityGroup,
-                               String userData, int waitActiveSec,
+                               String userData, List<String> networkIds, int waitActiveSec,
                                OSClient.OSClientV3 client) throws OpenstackException {
         log.debug("Spawning new server with waiting for ACTIVE state for {}. Name={}, flavor={}, image={}",
                 waitActiveSec, name, flavor.getName(), image.getName());
@@ -204,6 +204,7 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
                 .keypairName(keypairName)
                 .addSecurityGroup(securityGroup)
                 .userData(userData)
+                .networks(networkIds)
                 .build();
 
         Server server = client.compute().servers().bootAndWaitActive(serverCreate, waitActiveSec * 1000);
