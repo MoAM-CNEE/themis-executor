@@ -19,7 +19,7 @@ spec:
       serviceAccountName: themis-executor
       containers:
         - name: executor
-          image: proman3419/themis-executor:0.0.0.1
+          image: proman3419/themis-executor:0.0.0.2
           imagePullPolicy: "IfNotPresent"
 #          imagePullPolicy: "Always"
 #          imagePullPolicy: "Never" # local repository
@@ -65,7 +65,7 @@ spec:
                   name: themis-secrets
                   key: MAIL_PASSWORD
             - name: OPENSTACK_USERNAME
-              value: plgppycia
+              value: plgproman
             - name: OPENSTACK_PASSWORD
               valueFrom:
                 secretKeyRef:

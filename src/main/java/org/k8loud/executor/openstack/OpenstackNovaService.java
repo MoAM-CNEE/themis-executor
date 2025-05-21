@@ -23,7 +23,7 @@ public interface OpenstackNovaService {
     void confirmResize(Server server, OSClient.OSClientV3 client) throws OpenstackException;
 
     List<String> createServers(String name, Image image, Flavor flavor, String keypairName, String securityGroup,
-                               String userData, int count, int waitActiveSec,
+                               List<String> networkIds, String userData, int count, int waitActiveSec,
                                Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException;
 
     List<String> deleteServers(Pattern namePattern, Supplier<OSClient.OSClientV3> clientSupplier) throws OpenstackException;

@@ -11,6 +11,7 @@ import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.model.ExecutionRS;
 import org.k8loud.executor.model.Params;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -25,7 +26,7 @@ public class AddInstanceActionTest extends OpenstackActionBaseTest {
     private static final String USER_DATA = "user-data";
     private static final String COUNT = "3";
     private static final String WAIT_ACTIVE = "120";
-
+    private static final String NETWORK_IDS = "network-id-1,network-id-2";
 
     @ParameterizedTest
     @MethodSource
@@ -34,7 +35,7 @@ public class AddInstanceActionTest extends OpenstackActionBaseTest {
         AddInstanceAction addInstanceAction = new AddInstanceAction(
                 params, openstackServiceMock);
         when(openstackServiceMock.createServers(anyString(), anyString(), anyString(), anyString(),
-                nullable(String.class), nullable(String.class), nullable(String.class), anyInt(), anyInt()))
+                nullable(String.class), nullable(String.class), anyList(), nullable(String.class), anyInt(), anyInt()))
                 .thenReturn(resultMap);
 
         // when
@@ -43,11 +44,12 @@ public class AddInstanceActionTest extends OpenstackActionBaseTest {
         // then
         String keypair = params.getOrDefault("keypairName", "default");
         String securityGroup = params.get("securityGroup");
+        List<String> networkIds = params.getOptionalParamAsListOfStrings("networkIds", List.of());
         String userData = params.get("userData");
         int count = Integer.parseInt(params.getOrDefault("count", "1"));
         int waitActiveSec = Integer.parseInt(params.getOrDefault("waitActiveSec", "300"));
         verify(openstackServiceMock).createServers(eq(REGION), eq(NAME), eq(IMAGE_ID), eq(FLAVOR_ID), eq(keypair),
-                eq(securityGroup), eq(userData), eq(count), eq(waitActiveSec));
+                eq(securityGroup), eq(networkIds), eq(userData), eq(count), eq(waitActiveSec));
         assertSuccessResponse(response);
     }
 
@@ -62,8 +64,9 @@ public class AddInstanceActionTest extends OpenstackActionBaseTest {
                 new Params(Map.of("region", REGION, "name", NAME, "imageId", IMAGE_ID, "flavorId", FLAVOR_ID,
                         "count", COUNT)),
                 new Params(Map.of("region", REGION, "name", NAME, "imageId", IMAGE_ID, "flavorId", FLAVOR_ID,
-                        "waitActiveSec", WAIT_ACTIVE))
-
+                        "waitActiveSec", WAIT_ACTIVE)),
+                new Params(Map.of("region", REGION, "name", NAME, "imageId", IMAGE_ID, "flavorId", FLAVOR_ID,
+                        "networkIds", NETWORK_IDS))
         );
     }
 

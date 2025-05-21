@@ -8,6 +8,7 @@ import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.model.Params;
 import org.k8loud.executor.openstack.OpenstackService;
 
+import java.util.List;
 import java.util.Map;
 
 @EqualsAndHashCode
@@ -18,6 +19,7 @@ public class AddInstanceAction extends OpenstackAction {
     private String flavorId;
     private String keypairName;
     private String securityGroup;
+    private List<String> networkIds;
     private String userData;
     private int count;
     private int waitActiveSec;
@@ -29,7 +31,7 @@ public class AddInstanceAction extends OpenstackAction {
     @Builder
     public AddInstanceAction(OpenstackService openstackService,
                              String region, String name, String imageId, String flavorId, String keypairName,
-                             String securityGroup, String userData, int count, int waitActiveSec) {
+                             String securityGroup, List<String> networkIds, String userData, int count, int waitActiveSec) {
         super(openstackService);
         this.region = region;
         this.name = name;
@@ -37,6 +39,7 @@ public class AddInstanceAction extends OpenstackAction {
         this.flavorId = flavorId;
         this.keypairName = keypairName;
         this.securityGroup = securityGroup;
+        this.networkIds = networkIds;
         this.userData = userData;
         this.count = count;
         this.waitActiveSec = waitActiveSec;
@@ -50,6 +53,7 @@ public class AddInstanceAction extends OpenstackAction {
         flavorId = params.getRequiredParam("flavorId");
         keypairName = params.getOptionalParam("keypairName", "default");
         securityGroup = params.getOptionalParam("securityGroup", null);
+        networkIds = params.getOptionalParamAsListOfStrings("networkIds", List.of());
         userData = params.getOptionalParam("userData", null);
         count = params.getOptionalParamAsInt("count", 1);
         waitActiveSec = params.getOptionalParamAsInt("waitActiveSec", 300);
@@ -57,8 +61,8 @@ public class AddInstanceAction extends OpenstackAction {
 
     @Override
     protected Map<String, Object> executeBody() throws OpenstackException, ValidationException {
-        return openstackService.createServers(region, name, imageId, flavorId, keypairName, securityGroup, userData,
-                count, waitActiveSec);
+        return openstackService.createServers(region, name, imageId, flavorId, keypairName, securityGroup, networkIds,
+                userData, count, waitActiveSec);
     }
 
 }
