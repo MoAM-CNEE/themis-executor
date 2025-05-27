@@ -14,6 +14,8 @@ import java.util.*;
 @Builder
 @AllArgsConstructor
 public class Params extends HashMap<String, String> {
+    // TODO: Refactor to HashMap<String, Object>
+
     @TestOnly
     public Params(Map<String, String> map) {
         this.putAll(map);

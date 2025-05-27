@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: themis-executor-svc
+  namespace: themis-executor
+  labels:
+    app: themis-executor
+spec:
+  selector:
+    name: themis-executor
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP

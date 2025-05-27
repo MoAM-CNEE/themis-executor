@@ -19,9 +19,9 @@ spec:
       serviceAccountName: themis-executor
       containers:
         - name: executor
-          image: proman3419/themis-executor:0.0.0.2
-          imagePullPolicy: "IfNotPresent"
-#          imagePullPolicy: "Always"
+          image: proman3419/themis-executor:0.0.0.2-run-scenario-amocna-k8s-scaling
+#          imagePullPolicy: "IfNotPresent"
+          imagePullPolicy: "Always"
 #          imagePullPolicy: "Never" # local repository
           env:
             - name: DATA_STORAGE_ROOT_PATH
