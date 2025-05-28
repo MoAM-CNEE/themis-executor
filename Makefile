@@ -4,7 +4,7 @@ DOCKERHUB_USERNAME=proman3419
 IMAGE_NAME=themis-executor
 # w.x.y.z, one digit value each
 # when tinkering add -<description> suffix
-VER=0.0.0.2
+VER=0.0.0.3
 # MoAM-CNEE/themis-executor diverged from k8loud/themis-executor 0.0.4.4
 DEPLOY_NAMESPACE=themis-executor
 
@@ -35,14 +35,13 @@ build-and-push-final: ## !RUN ONLY ON MASTER! build-and-push-non-final + tag the
 build-and-push-non-final: ## plain jar -> GH | Docker image from a jar with Spring Boot wrapper -> DH
 	make build-jar
 	mvn deploy -DthemisExecutorVersion=$(VER) -DskipTests=true
-	make build-and-push-docker FULL_IMAGE_NAME=$(DOCKERHUB_USERNAME)/$(IMAGE_NAME):$(VER)
+	make build-and-push-docker
 
-build-and-push-docker:
-	@echo "FULL_IMAGE_NAME: $(FULL_IMAGE_NAME)"
+build-and-push-docker: ## build and push to DH
 	mvn package spring-boot:repackage -DthemisExecutorVersion=$(VER) -DskipTests=true
-	docker build -t $(FULL_IMAGE_NAME) . --build-arg VER=$(VER)
+	docker build -t $(DOCKERHUB_USERNAME)/$(IMAGE_NAME):$(VER) . --build-arg VER=$(VER)
 	docker login
-	docker push $(FULL_IMAGE_NAME)
+	docker push $(DOCKERHUB_USERNAME)/$(IMAGE_NAME):$(VER)
 
 deploy: ## deploy to the Kubernetes cluster
 	kubectl apply -f manifests/

@@ -39,11 +39,7 @@ public class UpdateEntityAction extends StateManagerAction {
     public void unpackParams(Params params) throws ActionException {
         this.type = EntityType.fromName(params.getRequiredParam("type"));
         this.filterBy = params.getRequiredParam("filterBy");
-        this.lambdas = params.getRequiredParamAsMap("lambdas").entrySet().stream()
-                .collect(java.util.stream.Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> String.valueOf(e.getValue())
-                ));
+        this.lambdas = parseLambdas(params.getRequiredParam("lambdas"));
     }
 
     @Override
