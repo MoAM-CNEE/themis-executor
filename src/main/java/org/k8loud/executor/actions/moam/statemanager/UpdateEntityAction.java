@@ -14,7 +14,6 @@ import static org.k8loud.executor.exception.code.ActionExceptionCode.PARSING_PAR
 
 @Slf4j
 public class UpdateEntityAction extends StateManagerAction {
-    private EntityType type;
     private String filterBy;
     private Map<String, String> lambdas;
 
@@ -23,28 +22,26 @@ public class UpdateEntityAction extends StateManagerAction {
     }
 
     @Builder
-    public UpdateEntityAction(StateManagerService stateManagerService, EntityType type, String filterBy, String lambdas) {
-        this(stateManagerService, type, filterBy, parseLambdas(lambdas));
+    public UpdateEntityAction(StateManagerService stateManagerService, String filterBy, String lambdas) {
+        this(stateManagerService, filterBy, parseLambdas(lambdas));
     }
 
     @Builder
-    public UpdateEntityAction(StateManagerService stateManagerService, EntityType type, String filterBy, Map<String, String> lambdas) {
+    public UpdateEntityAction(StateManagerService stateManagerService, String filterBy, Map<String, String> lambdas) {
         super(stateManagerService);
-        this.type = type;
         this.filterBy = filterBy;
         this.lambdas = lambdas;
     }
 
     @Override
     public void unpackParams(Params params) throws ActionException {
-        this.type = EntityType.fromName(params.getRequiredParam("type"));
         this.filterBy = params.getRequiredParam("filterBy");
         this.lambdas = parseLambdas(params.getRequiredParam("lambdas"));
     }
 
     @Override
     protected Map<String, Object> executeBody() throws CustomException {
-        return stateManagerService.updateEntity(type, filterBy, lambdas);
+        return stateManagerService.updateEntity(filterBy, lambdas);
     }
 
     private static Map<String, String> parseLambdas(String lambdasJsonString) {
