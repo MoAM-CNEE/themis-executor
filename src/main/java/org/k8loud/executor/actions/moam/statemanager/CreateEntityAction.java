@@ -14,7 +14,6 @@ import static org.k8loud.executor.exception.code.ActionExceptionCode.PARSING_PAR
 
 @Slf4j
 public class CreateEntityAction extends StateManagerAction {
-    private EntityType type;
     private Map<String, Object> definition;
 
     public CreateEntityAction(Params params, StateManagerService stateManagerService) throws ActionException {
@@ -22,27 +21,25 @@ public class CreateEntityAction extends StateManagerAction {
     }
 
     @Builder
-    public CreateEntityAction(StateManagerService stateManagerService, EntityType type, String definition) {
-        this(stateManagerService, type, parseDefinition(definition));
+    public CreateEntityAction(StateManagerService stateManagerService, String definition) {
+        this(stateManagerService, parseDefinition(definition));
     }
 
     @Builder
-    public CreateEntityAction(StateManagerService stateManagerService, EntityType type, Map<String, Object> definition) {
+    public CreateEntityAction(StateManagerService stateManagerService, Map<String, Object> definition) {
         super(stateManagerService);
         this.stateManagerService = stateManagerService;
-        this.type = type;
         this.definition = definition;
     }
 
     @Override
     public void unpackParams(Params params) throws ActionException {
-        type = EntityType.fromName(params.getRequiredParam("type"));
         definition = parseDefinition(params.getRequiredParam("definition"));
     }
 
     @Override
     protected Map<String, Object> executeBody() throws CustomException {
-        return stateManagerService.createEntity(type, definition);
+        return stateManagerService.createEntity(definition);
     }
 
     private static Map<String, Object> parseDefinition(String definitionJsonString) {

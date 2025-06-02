@@ -10,16 +10,16 @@ import org.k8loud.executor.model.Params;
 import java.util.Map;
 
 @Slf4j
-public class DeleteEntityAction extends StateManagerAction {
+public class ReadEntityAction extends StateManagerAction {
     private String query;
 
-    public DeleteEntityAction(Params params, StateManagerService stateManagerService) throws ActionException {
+    public ReadEntityAction(Params params, StateManagerService stateManagerService) throws ActionException {
         super(params, stateManagerService);
     }
 
 
     @Builder
-    public DeleteEntityAction(StateManagerService stateManagerService, String query) {
+    public ReadEntityAction(StateManagerService stateManagerService, String query) {
         super(stateManagerService);
         this.stateManagerService = stateManagerService;
         this.query = query;
@@ -32,6 +32,6 @@ public class DeleteEntityAction extends StateManagerAction {
 
     @Override
     protected Map<String, Object> executeBody() throws CustomException {
-        return stateManagerService.deleteEntity(query);
+        return stateManagerService.readEntity(query);
     }
 }

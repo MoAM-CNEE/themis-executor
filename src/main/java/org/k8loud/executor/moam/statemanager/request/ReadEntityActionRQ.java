@@ -3,14 +3,14 @@ package org.k8loud.executor.moam.statemanager.request;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 @Setter
 @Getter
-public class DeleteEntityActionRQ {
-    private int changeId;
+public class ReadEntityActionRQ {
     private String query;
 
-    public DeleteEntityActionRQ(int changeId, String query) {
-        this.changeId = changeId;
+    public ReadEntityActionRQ(String query) {
         this.query = query;
     }
 }
