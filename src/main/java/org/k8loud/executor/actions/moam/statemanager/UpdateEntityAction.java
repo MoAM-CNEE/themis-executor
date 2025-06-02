@@ -16,32 +16,30 @@ import static org.k8loud.executor.exception.code.ActionExceptionCode.PARSING_PAR
 public class UpdateEntityAction extends StateManagerAction {
     private String query;
     private Map<String, String> lambdas;
+    private boolean triggerMirrorManager;
 
     public UpdateEntityAction(Params params, StateManagerService stateManagerService) throws ActionException {
         super(params, stateManagerService);
     }
 
     @Builder
-    public UpdateEntityAction(StateManagerService stateManagerService, String query, String lambdas) {
-        this(stateManagerService, query, parseLambdas(lambdas));
-    }
-
-    @Builder
-    public UpdateEntityAction(StateManagerService stateManagerService, String query, Map<String, String> lambdas) {
+    public UpdateEntityAction(StateManagerService stateManagerService, String query, String lambdas, Boolean triggerMirrorManager) {
         super(stateManagerService);
         this.query = query;
-        this.lambdas = lambdas;
+        this.lambdas = parseLambdas(lambdas);
+        this.triggerMirrorManager = triggerMirrorManager != null ? triggerMirrorManager : true;
     }
 
     @Override
     public void unpackParams(Params params) throws ActionException {
-        this.query = params.getRequiredParam("query");
-        this.lambdas = parseLambdas(params.getRequiredParam("lambdas"));
+        query = params.getRequiredParam("query");
+        lambdas = parseLambdas(params.getRequiredParam("lambdas"));
+        triggerMirrorManager = params.getOptionalParamAsBoolean("triggerMirrorManager", "true");
     }
 
     @Override
     protected Map<String, Object> executeBody() throws CustomException {
-        return stateManagerService.updateEntity(query, lambdas);
+        return stateManagerService.updateEntity(query, lambdas, triggerMirrorManager);
     }
 
     private static Map<String, String> parseLambdas(String lambdasJsonString) {

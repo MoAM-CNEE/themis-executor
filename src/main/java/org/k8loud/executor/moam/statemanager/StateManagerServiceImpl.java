@@ -35,9 +35,9 @@ public class StateManagerServiceImpl implements StateManagerService {
     private final HTTPService httpService;
 
     @Override
-    public Map<String, Object> createEntity(Map<String, Object> definition) throws HTTPException {
+    public Map<String, Object> createEntity(Map<String, Object> definition, boolean triggerMirrorManager) throws HTTPException {
         int changeId = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);
-        CreateEntityActionRQ request = new CreateEntityActionRQ(changeId, definition);
+        CreateEntityActionRQ request = new CreateEntityActionRQ(changeId, definition, triggerMirrorManager);
         HttpResponse response = httpService.createSession().doPost(
                 stateManagerProperties.getUrl(),
                 stateManagerProperties.getEntityEndpoint() + ENTITY_CREATE,
@@ -49,9 +49,9 @@ public class StateManagerServiceImpl implements StateManagerService {
     }
 
     @Override
-    public Map<String, Object> updateEntity(String query, Map<String, String> lambdas) throws HTTPException {
+    public Map<String, Object> updateEntity(String query, Map<String, String> lambdas, boolean triggerMirrorManager) throws HTTPException {
         int changeId = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);
-        UpdateEntityActionRQ request = new UpdateEntityActionRQ(changeId, query, lambdas);
+        UpdateEntityActionRQ request = new UpdateEntityActionRQ(changeId, query, lambdas, triggerMirrorManager);
         HttpResponse response = httpService.createSession().doPut(
                 stateManagerProperties.getUrl(),
                 stateManagerProperties.getEntityEndpoint() + ENTITY_UPDATE,
@@ -63,9 +63,9 @@ public class StateManagerServiceImpl implements StateManagerService {
     }
 
     @Override
-    public Map<String, Object> deleteEntity(String query) throws HTTPException {
+    public Map<String, Object> deleteEntity(String query, boolean triggerMirrorManager) throws HTTPException {
         int changeId = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);
-        DeleteEntityActionRQ request = new DeleteEntityActionRQ(changeId, query);
+        DeleteEntityActionRQ request = new DeleteEntityActionRQ(changeId, query, triggerMirrorManager);
         HttpResponse response = httpService.createSession().doDelete(
                 stateManagerProperties.getUrl(),
                 stateManagerProperties.getEntityEndpoint() + ENTITY_DELETE,
