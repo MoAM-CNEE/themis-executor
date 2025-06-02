@@ -10,4 +10,6 @@ public interface StateManagerService {
     Map<String, Object> updateEntity(String query, Map<String, String> lambdas) throws HTTPException;
 
     Map<String, Object> deleteEntity(String query) throws HTTPException;
+
+    Map<String, Object> readEntity(String query) throws HTTPException;
 }

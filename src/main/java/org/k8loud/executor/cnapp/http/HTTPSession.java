@@ -44,6 +44,22 @@ public class HTTPSession {
         return sendRequest(request);
     }
 
+    public HttpResponse doGet(String urlBase, String endpoint, Object paramsObj) throws HTTPException {
+        return doGet(urlBase, endpoint, paramsObj, FieldNamingPolicy.IDENTITY);
+    }
+
+    public HttpResponse doGet(String urlBase, String endpoint, Object paramsObj, FieldNamingPolicy fieldNamingPolicy)
+            throws HTTPException {
+        HttpEntityEnclosingRequestBase httpGetWithBody = new HttpEntityEnclosingRequestBase() {
+            @Override
+            public String getMethod() {
+                return "GET";
+            }
+        };
+        httpGetWithBody.setURI(URI.create(getUrl(urlBase, endpoint)));
+        return doEntityRequest(httpGetWithBody, paramsObj, fieldNamingPolicy);
+    }
+
     public HttpResponse doPost(String urlBase, String endpoint, Object paramsObj) throws HTTPException {
         return doPost(urlBase, endpoint, paramsObj, FieldNamingPolicy.IDENTITY);
     }
