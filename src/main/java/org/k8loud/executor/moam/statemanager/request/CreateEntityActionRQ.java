@@ -10,9 +10,11 @@ import java.util.Map;
 public class CreateEntityActionRQ {
     private int changeId;
     private Map<String, Object> definition;
+    private boolean triggerMirrorManager;
 
-    public CreateEntityActionRQ(int changeId, Map<String, Object> definition) {
+    public CreateEntityActionRQ(int changeId, Map<String, Object> definition, boolean triggerMirrorManager) {
         this.changeId = changeId;
         this.definition = definition;
+        this.triggerMirrorManager = triggerMirrorManager;
     }
 }

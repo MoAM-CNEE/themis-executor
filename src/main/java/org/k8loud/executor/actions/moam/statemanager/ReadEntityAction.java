@@ -17,7 +17,6 @@ public class ReadEntityAction extends StateManagerAction {
         super(params, stateManagerService);
     }
 
-
     @Builder
     public ReadEntityAction(StateManagerService stateManagerService, String query) {
         super(stateManagerService);
