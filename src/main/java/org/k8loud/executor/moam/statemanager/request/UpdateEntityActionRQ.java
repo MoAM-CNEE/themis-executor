@@ -9,12 +9,12 @@ import java.util.Map;
 @Getter
 public class UpdateEntityActionRQ {
     private int changeId;
-    private String filterBy;
+    private String query;
     private Map<String, String> lambdas;
 
-    public UpdateEntityActionRQ(int changeId, String filterBy, Map<String, String> lambdas) {
+    public UpdateEntityActionRQ(int changeId, String query, Map<String, String> lambdas) {
         this.changeId = changeId;
-        this.filterBy = filterBy;
+        this.query = query;
         this.lambdas = lambdas;
     }
 }

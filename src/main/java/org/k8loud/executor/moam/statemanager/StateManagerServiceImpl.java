@@ -41,9 +41,9 @@ public class StateManagerServiceImpl implements StateManagerService {
     }
 
     @Override
-    public Map<String, Object> updateEntity(String filterBy, Map<String, String> lambdas) throws HTTPException {
+    public Map<String, Object> updateEntity(String query, Map<String, String> lambdas) throws HTTPException {
         int changeId = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);
-        UpdateEntityActionRQ request = new UpdateEntityActionRQ(changeId, filterBy, lambdas);
+        UpdateEntityActionRQ request = new UpdateEntityActionRQ(changeId, query, lambdas);
         HttpResponse response = httpService.createSession().doPut(
                 stateManagerProperties.getUrl(),
                 stateManagerProperties.getEntityEndpoint() + ENTITY_UPDATE,
@@ -55,9 +55,9 @@ public class StateManagerServiceImpl implements StateManagerService {
     }
 
     @Override
-    public Map<String, Object> deleteEntity(String filterBy) throws HTTPException {
+    public Map<String, Object> deleteEntity(String query) throws HTTPException {
         int changeId = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);
-        DeleteEntityActionRQ request = new DeleteEntityActionRQ(changeId, filterBy);
+        DeleteEntityActionRQ request = new DeleteEntityActionRQ(changeId, query);
         HttpResponse response = httpService.createSession().doDelete(
                 stateManagerProperties.getUrl(),
                 stateManagerProperties.getEntityEndpoint() + ENTITY_DELETE,

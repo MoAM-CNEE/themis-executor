@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Slf4j
 public class DeleteEntityAction extends StateManagerAction {
-    private String filterBy;
+    private String query;
 
     public DeleteEntityAction(Params params, StateManagerService stateManagerService) throws ActionException {
         super(params, stateManagerService);
@@ -19,19 +19,19 @@ public class DeleteEntityAction extends StateManagerAction {
 
 
     @Builder
-    public DeleteEntityAction(StateManagerService stateManagerService, String filterBy) {
+    public DeleteEntityAction(StateManagerService stateManagerService, String query) {
         super(stateManagerService);
         this.stateManagerService = stateManagerService;
-        this.filterBy = filterBy;
+        this.query = query;
     }
 
     @Override
     public void unpackParams(Params params) throws ActionException {
-        filterBy = params.getRequiredParam("filterBy");
+        query = params.getRequiredParam("query");
     }
 
     @Override
     protected Map<String, Object> executeBody() throws CustomException {
-        return stateManagerService.deleteEntity(filterBy);
+        return stateManagerService.deleteEntity(query);
     }
 }

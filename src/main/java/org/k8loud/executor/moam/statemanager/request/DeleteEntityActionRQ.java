@@ -7,10 +7,10 @@ import lombok.Setter;
 @Getter
 public class DeleteEntityActionRQ {
     private int changeId;
-    private String filterBy;
+    private String query;
 
-    public DeleteEntityActionRQ(int changeId, String filterBy) {
+    public DeleteEntityActionRQ(int changeId, String query) {
         this.changeId = changeId;
-        this.filterBy = filterBy;
+        this.query = query;
     }
 }
