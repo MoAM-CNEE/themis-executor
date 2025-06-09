@@ -2,6 +2,7 @@ package org.k8loud.executor.openstack;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.exception.code.OpenstackExceptionCode;
 import org.k8loud.executor.util.Util;
@@ -20,9 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -93,6 +92,17 @@ public class OpenstackNovaServiceImpl implements OpenstackNovaService {
             throw new OpenstackException(FLAVOR_NOT_EXITS, "Failed to find flavor with id '%s'", flavorId);
         }
         return flavor;
+    }
+
+    @Override
+    public List<Flavor> getFlavors(OSClient.OSClientV3 client, @Nullable Set<String> idsFilter) {
+        log.debug("Getting flavors");
+        var flavorsStream = client.compute().flavors().list().stream()
+                .map(flavor -> (Flavor) flavor);
+        if (idsFilter != null) {
+            flavorsStream = flavorsStream.filter(flavor -> idsFilter.contains(flavor.getId()));
+        }
+        return flavorsStream.toList();
     }
 
     @Override

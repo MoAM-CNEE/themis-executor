@@ -3,6 +3,7 @@ package org.k8loud.executor.openstack;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.exception.ValidationException;
 import org.k8loud.executor.util.annotation.ThrowExceptionAndLogExecutionTime;
@@ -327,6 +328,17 @@ public class OpenstackServiceImpl implements OpenstackService {
                         server.getName(), secDuration),
                 Map.of("affectedRules", rulesToModify, "createdRules", throttlingRules));
     }
+
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "GET_FLAVORS_FAILED")
+    public Map<String, Object> getFlavors(String region, @Nullable Set<String> idsFilter)
+            throws OpenstackException, ValidationException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        List<Flavor> flavors = openstackNovaService.getFlavors(client, idsFilter);
+        return resultMap(String.format("Obtained %d flavors from region %s", flavors.size(), region),
+                Map.of("flavors", flavors));
+    }
+
 
     private void scheduleIpThrottlingRemoval(String region, Set<SecurityGroupRule> rulesToDelete,
                                              Map<SecurityGroup, Set<SecurityGroupRule>> rulesToRestore,

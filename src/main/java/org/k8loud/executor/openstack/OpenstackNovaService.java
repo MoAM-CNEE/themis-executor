@@ -1,7 +1,7 @@
 package org.k8loud.executor.openstack;
 
+import org.jetbrains.annotations.Nullable;
 import org.k8loud.executor.exception.OpenstackException;
-import org.k8loud.executor.exception.ValidationException;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.api.exceptions.ConnectionException;
 import org.openstack4j.model.compute.Action;
@@ -12,7 +12,7 @@ import org.openstack4j.model.network.SecurityGroup;
 import org.springframework.retry.annotation.Retryable;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -35,6 +35,8 @@ public interface OpenstackNovaService {
     List<Server> getServers(OSClient.OSClientV3 client, Pattern namePattern);
 
     Flavor getFlavor(String flavourId, OSClient.OSClientV3 client) throws OpenstackException;
+
+    List<Flavor> getFlavors(OSClient.OSClientV3 client, @Nullable Set<String> idsFilter);
 
     void basicServerAction(Server server, Action action, OSClient.OSClientV3 client) throws OpenstackException;
 
