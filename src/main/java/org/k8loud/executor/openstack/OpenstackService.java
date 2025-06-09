@@ -1,10 +1,12 @@
 package org.k8loud.executor.openstack;
 
+import org.jetbrains.annotations.Nullable;
 import org.k8loud.executor.exception.OpenstackException;
 import org.k8loud.executor.exception.ValidationException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 //FIXME enable annotation here not in implementation (with spring-retry working)
 public interface OpenstackService {
@@ -57,4 +59,6 @@ public interface OpenstackService {
     Map<String, Object> throttle(String region, String serverId, String ethertype,
                                  String remoteIpPrefix, String protocol, int portRangeMin,
                                  int portRangeMax, long secDuration) throws OpenstackException, ValidationException;
+
+    Map<String, Object> getFlavors(String region, @Nullable Set<String> idsFilter) throws OpenstackException, ValidationException;
 }

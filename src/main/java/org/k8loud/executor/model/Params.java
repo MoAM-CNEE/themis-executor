@@ -9,6 +9,7 @@ import org.k8loud.executor.exception.ParamNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -62,6 +63,12 @@ public class Params extends HashMap<String, String> {
     public List<String> getOptionalParamAsListOfStrings(String param, List<String> defaultValue) {
         return Optional.ofNullable(this.get(param))
                 .map(p -> Arrays.stream(p.split(",")).toList())
+                .orElse(defaultValue);
+    }
+
+    public Set<String> getOptionalParamAsSetOfStrings(String param, Set<String> defaultValue) {
+        return Optional.ofNullable(this.get(param))
+                .map(p -> Arrays.stream(p.split(",")).collect(Collectors.toSet()))
                 .orElse(defaultValue);
     }
 

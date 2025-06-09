@@ -37,7 +37,8 @@ public enum OpenstackExceptionCode {
     UNPAUSE_SERVER_FAILED,
     STOP_SERVER_FAILED,
     START_SERVER_FAILED,
-    UNSUPPORTED_ACTION;
+    UNSUPPORTED_ACTION,
+    GET_FLAVORS_FAILED;
 
     public static OpenstackExceptionCode getNovaExceptionCode(Action action) throws OpenstackException {
         return switch (action){

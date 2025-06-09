@@ -1,0 +1,24 @@
+### get all flavors
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "openstack",
+  "actionName": "GetFlavorsAction",
+  "params": {
+    "region": "RegionOne"
+  }
+}
+
+### get flavors with given ids
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "openstack",
+  "actionName": "GetFlavorsAction",
+  "params": {
+    "region": "RegionOne",
+    "idsFilter": "414a6a89-57c3-4331-9a05-0a53fc9a7d02,5620ff10-3b17-450c-b306-6f9c8db4f43f"
+  }
+}
