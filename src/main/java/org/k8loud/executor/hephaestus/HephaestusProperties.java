@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 public class HephaestusProperties {
     private String url = "http://hephaestus-gui.hephaestus.svc.cluster.local:8080";
     private String selectedEndpoint = "/hephaestus/metrics/selected";
+    private boolean logMetrics = false;
 
     @Bean
     public RestTemplate restTemplate() {

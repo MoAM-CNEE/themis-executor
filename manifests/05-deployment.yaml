@@ -19,7 +19,7 @@ spec:
       serviceAccountName: themis-executor
       containers:
         - name: executor
-          image: proman3419/themis-executor:0.0.0.6
+          image: proman3419/themis-executor:0.0.0.7
 #          imagePullPolicy: "IfNotPresent"
           imagePullPolicy: "Always"
 #          imagePullPolicy: "Never" # local repository
@@ -36,6 +36,8 @@ spec:
               value: http://hephaestus-gui.hephaestus.svc.cluster.local:8080
             - name: HEPHAESTUS_SELECTED_ENDPOINT
               value: /hephaestus/metrics/selected
+            - name: HEPHAESTUS_LOG_METRICS
+              value: "false"
             - name: KUBERNETES_MASTER
               value: https://149.156.10.138:6443
             - name: KUBERNETES_CA_CERT_DATA
