@@ -17,17 +17,20 @@ public interface KubernetesService {
     Map<String, Object> deleteResource(String namespace, String resourceName, String resourceType,
                                        Long gracePeriodSeconds) throws KubernetesException;
 
+    Map<String, Object> getReadiness(String namespace, String resourceName, String resourceType,
+                                     Long gracePeriodSeconds) throws KubernetesException;
+
     Map<String, Object> updateConfigMap(String namespace, String resourceName,
                                         Map<String, String> replacements) throws KubernetesException, ValidationException;
 
     Map<String, Object> changeResourcesOfContainerWithinPodAction(String namespace, String podName, String containerName,
-                                                     String limitsCpu, String limitsMemory, String requestsCpu,
-                                                     String requestsMemory) throws KubernetesException;
+                                                                  String limitsCpu, String limitsMemory, String requestsCpu,
+                                                                  String requestsMemory) throws KubernetesException;
 
     Map<String, Object> changeResourcesOfContainerWithinDeploymentAction(String namespace, String deploymentName,
-                                                                                String containerName, String limitsCpu,
-                                                                                String limitsMemory, String requestsCpu,
-                                                                                String requestsMemory)
+                                                                         String containerName, String limitsCpu,
+                                                                         String limitsMemory, String requestsCpu,
+                                                                         String requestsMemory)
             throws KubernetesException;
 
     <T> Resource<T> getResource(String namespace, String resourceType, String resourceName) throws KubernetesException;

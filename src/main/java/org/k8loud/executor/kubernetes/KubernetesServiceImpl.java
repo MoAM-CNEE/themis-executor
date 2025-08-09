@@ -9,6 +9,10 @@ import io.fabric8.kubernetes.client.dsl.AppsAPIGroupDSL;
 import io.fabric8.kubernetes.client.dsl.MixedOperation;
 import io.fabric8.kubernetes.client.dsl.Resource;
 import io.fabric8.kubernetes.client.dsl.internal.HasMetadataOperation;
+import io.fabric8.kubernetes.client.dsl.internal.apps.v1.DeploymentOperationsImpl;
+import io.fabric8.kubernetes.client.dsl.internal.apps.v1.ReplicaSetOperationsImpl;
+import io.fabric8.kubernetes.client.dsl.internal.core.v1.PodOperationsImpl;
+import io.fabric8.kubernetes.client.readiness.Readiness;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +49,7 @@ public class KubernetesServiceImpl implements KubernetesService {
         if ("Deployment".equals(resourceType)) {
             currentReplicas = getDeploymentReplicasNumber(namespace, resourceName);
         }
-        int newReplicasCount = replicas + currentReplicas > 0 ? replicas + currentReplicas: 1;
+        int newReplicasCount = replicas + currentReplicas > 0 ? replicas + currentReplicas : 1;
         getResource(namespace, resourceType, resourceName)
                 .scale(newReplicasCount);
 
@@ -105,6 +109,34 @@ public class KubernetesServiceImpl implements KubernetesService {
                 .delete();
 
         return resultMap(String.format("Deleted resource %s", getFullResourceName(resourceType, resourceName)));
+    }
+
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException", exceptionCode = "GET_READINESS_FAILED")
+    public Map<String, Object> getReadiness(String namespace, String resourceName, String resourceType,
+                                                                    Long gracePeriodSeconds)
+            throws KubernetesException {
+        log.info("Getting {}, waiting {} seconds for the result", getFullResourceName(resourceType, resourceName),
+                gracePeriodSeconds);
+        Resource<?> resource = getResource(namespace, resourceType, resourceName);
+
+        HasMetadata metadataResource = null;
+        if (resource instanceof PodOperationsImpl) {
+            metadataResource = ((PodOperationsImpl) resource).get();
+        } else if (resource instanceof DeploymentOperationsImpl) {
+            metadataResource = ((DeploymentOperationsImpl) resource).get();
+        } else if (resource instanceof ReplicaSetOperationsImpl) {
+            metadataResource = ((ReplicaSetOperationsImpl) resource).get();
+        }
+        if (metadataResource == null) {
+            throw new KubernetesException(INVALID_RESOURCE_TYPE);
+        }
+
+        Readiness readiness = Readiness.getInstance();
+        boolean isReady = readiness.isReady(metadataResource);
+
+        return resultMap(String.format("Resource %s is ready: %s",
+                getFullResourceName(resourceType, resourceName), isReady));
     }
 
     @Override
@@ -173,9 +205,9 @@ public class KubernetesServiceImpl implements KubernetesService {
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "KubernetesException",
             exceptionCode = "CHANGE_RESOURCES_OF_CONTAINER_WITHIN_DEPLOYMENT_FAILED")
     public Map<String, Object> changeResourcesOfContainerWithinDeploymentAction(String namespace, String deploymentName,
-                                                                         String containerName, String limitsCpu,
-                                                                         String limitsMemory, String requestsCpu,
-                                                                         String requestsMemory)
+                                                                                String containerName, String limitsCpu,
+                                                                                String limitsMemory, String requestsCpu,
+                                                                                String requestsMemory)
             throws KubernetesException {
         Resource<Deployment> resource = getResource(namespace, DEPLOYMENT.toString(), deploymentName);
         final ResourceRequirements requirements = createResourceRequirements(limitsCpu, limitsMemory, requestsCpu,
