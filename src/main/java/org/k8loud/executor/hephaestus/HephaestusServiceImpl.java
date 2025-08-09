@@ -43,7 +43,9 @@ public class HephaestusServiceImpl implements HephaestusService {
                 .map(translator::parseResult)
                 .flatMap(result -> result.getMetrics().stream())
                 .toList();
-        log.info("===== Queried metrics =====\n{}", getMetricsRepr(metrics));
+        if (hephaestusProperties.isLogMetrics()) {
+            log.info("===== Queried metrics =====\n{}", getMetricsRepr(metrics));
+        }
         return metrics;
     }
 
