@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.k8loud.executor.actions.Action;
+import org.k8loud.executor.cnapp.message.MessageService;
 import org.k8loud.executor.moam.statemanager.StateManagerService;
 import org.k8loud.executor.util.ActionHelper;
 import org.k8loud.executor.cnapp.db.DBService;
@@ -43,6 +44,7 @@ public class MapperServiceImpl implements MapperService {
     private final MailService mailService;
     private final DataStorageService dataStorageService;
     private final HTTPService httpService;
+    private final MessageService messageService;
     private final StateManagerService stateManagerService;
     private final DBService mySQLService = new MySQLService();
     private final DBService mongoService = new MongoService();
@@ -71,6 +73,7 @@ public class MapperServiceImpl implements MapperService {
                 case "cnapp.themis.datastorage" ->
                         classParameters.add(new ClassParameter(DataStorageService.class, dataStorageService));
                 case "cnapp.http" -> classParameters.add(new ClassParameter(HTTPService.class, httpService));
+                case "cnapp.message" -> classParameters.add(new ClassParameter(MessageService.class, messageService));
                 case "moam.statemanager" ->
                         classParameters.add(new ClassParameter(StateManagerService.class, stateManagerService));
             }
