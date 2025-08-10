@@ -185,12 +185,19 @@ public class KubernetesServiceImpl implements KubernetesService {
                 .endSpec()
                 .build();
 
-        final long gracePeriodSeconds = 1L;
-        deleteResource(namespace, podName, POD.toString(), gracePeriodSeconds);
-        try {
-            Thread.sleep(gracePeriodSeconds * 1000);
-        } catch (InterruptedException e) {
-            log.warn("Interrupted while waiting for graceful resource deletion");
+        deleteResource(namespace, podName, POD.toString(), 1L);
+        final long pollIntervalSeconds = 2L;
+        while (true) {
+            try {
+                Thread.sleep(pollIntervalSeconds * 1000);
+                getResource(namespace, POD.toString(), podName);
+            } catch (InterruptedException e) {
+                log.warn("Interrupted while waiting for graceful resource deletion");
+            } catch (KubernetesException e) {
+                if (e.getExceptionCode() == RESOURCE_NOT_FOUND) {
+                    break;
+                }
+            }
         }
 
         log.info("Recreating {}", fullResourceName);
