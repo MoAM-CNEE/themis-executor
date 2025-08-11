@@ -1,0 +1,12 @@
+### delete message
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "cnapp.message",
+  "actionName": "DeleteMessageAction",
+  "params": {
+    "applicationUrl": "http://dummy-message-service-svc.dummy-message-service.svc.cluster.local:8000",
+    "key": "themis-key"
+  }
+}

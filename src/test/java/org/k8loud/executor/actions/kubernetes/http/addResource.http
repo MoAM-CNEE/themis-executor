@@ -32,7 +32,7 @@ Content-Type: application/json
   "collectionName": "kubernetes",
   "actionName": "AddResourceAction",
   "params": {
-    "resourceDescription": "            apiVersion: v1\r\n            kind: Pod\r\n            metadata:\r\n              name: nginx-with-namespace\r\n              namespace: namespace-from-resource-description\r\n            spec:\r\n              containers:\r\n              - name: nginx-with-namespace\r\n                image: nginx:1.14.2"
+    "resourceDescription": "            apiVersion: v1\r\n            kind: Pod\r\n            metadata:\r\n              name: nginx\r\n              namespace: default\r\n            spec:\r\n              containers:\r\n              - name: nginx\r\n                image: nginx:1.14.2"
   }
 }
 
@@ -45,6 +45,6 @@ Content-Type: application/json
   "actionName": "AddResourceAction",
   "params": {
     "namespace": "default",
-    "resourceDescription": "            apiVersion: v1\r\n            kind: Pod\r\n            metadata:\r\n              name: nginx-with-namespace\r\n              namespace: namespace-from-resource-description\r\n            spec:\r\n              containers:\r\n              - name: nginx-with-namespace\r\n                image: nginx:1.14.2"
+    "resourceDescription": "            apiVersion: v1\r\n            kind: Pod\r\n            metadata:\r\n              name: nginx\r\n              namespace: default\r\n            spec:\r\n              containers:\r\n              - name: nginx\r\n                image: nginx:1.14.2"
   }
 }

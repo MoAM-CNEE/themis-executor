@@ -19,10 +19,10 @@ spec:
       serviceAccountName: themis-executor
       containers:
         - name: executor
-          image: proman3419/themis-executor:0.0.0.7
+          image: proman3419/themis-executor:0.0.0.8
 #          imagePullPolicy: "IfNotPresent"
-          imagePullPolicy: "Always"
-#          imagePullPolicy: "Never" # local repository
+#          imagePullPolicy: "Always"
+          imagePullPolicy: "Never" # local repository
           env:
             - name: DATA_STORAGE_ROOT_PATH
               value: /tmp
@@ -39,7 +39,8 @@ spec:
             - name: HEPHAESTUS_LOG_METRICS
               value: "false"
             - name: KUBERNETES_MASTER
-              value: https://149.156.10.138:6443
+#              value: https://149.156.10.138:6443 # remote
+              value: https://192.168.49.2:8443 # local
             - name: KUBERNETES_CA_CERT_DATA
               valueFrom:
                 secretKeyRef:

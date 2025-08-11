@@ -1,0 +1,14 @@
+### get readiness of pod
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "kubernetes",
+  "actionName": "GetReadinessAction",
+  "params": {
+    "resourceType": "Pod",
+    "resourceName": "nginx",
+    "namespace": "default",
+    "gracePeriodSeconds": "10"
+  }
+}
