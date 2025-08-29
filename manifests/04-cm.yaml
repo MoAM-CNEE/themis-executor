@@ -13,3 +13,91 @@ data:
       then
         System.out.println("test rule triggered");
     end
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcpdump-exporter-script
+  namespace: themis-executor
+data:
+  tcpdump_exporter.py: |
+    #!/usr/bin/env python3
+    import subprocess
+    import re
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+    import threading
+
+    # adjust
+    TARGET_MAP = {
+        "149.156.9.196": "openstack",
+        "149.156.10.138": "kubernetes",
+        "10.108.99.226": "message-service"
+    }
+
+    TCP_HEADER_BASE = 20
+    IP_HEADER = 20
+    ETHERNET_HEADER = 14
+
+    metrics = {service: 0 for service in TARGET_MAP.values()}
+
+    def parse_tcpdump_line(line):
+        """
+        Parse a tcpdump line like:
+        eth0  Out IP 10.244.8.66.39374 > 10.101.43.200.8080: Flags [...], length N
+
+        Only parses lines that are 'Out'. Returns:
+            (src_ip, dst_ip, payload_len, tcp_options_len)
+        """
+        if " Out IP " not in line:
+            return None
+
+        m = re.search(r'IP (\d+\.\d+\.\d+\.\d+)\.(\d+) > (\d+\.\d+\.\d+\.\d+)\.(\d+): .*length (\d+)', line)
+        if not m:
+            return None
+
+        src_ip = m.group(1)
+        dst_ip = m.group(3)
+        payload_len = int(m.group(5))
+
+        # Estimate TCP options length
+        options_len = 12 if "TS val" in line else 0
+        options_len += line.count("nop")
+
+        return src_ip, dst_ip, payload_len, options_len
+
+    def total_packet_bytes(payload_len, tcp_options_len):
+        return payload_len + TCP_HEADER_BASE + tcp_options_len + IP_HEADER + ETHERNET_HEADER
+
+    def monitor_tcpdump(interface="any"):
+        tcpdump_cmd = ["tcpdump", "-i", interface, "-n", "-l"]
+        proc = subprocess.Popen(tcpdump_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        for line in proc.stdout:
+            parsed = parse_tcpdump_line(line)
+            if parsed:
+                print(parsed)
+                src, dst, payload_len, tcp_options_len = parsed
+                if dst in TARGET_MAP:
+                    bytes_total = total_packet_bytes(payload_len, tcp_options_len)
+                    service = TARGET_MAP[dst]
+                    metrics[service] += bytes_total
+                    print(dst, service, metrics[service])
+
+    class MetricsHandler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            if self.path == "/metrics":
+                response = ""
+                for service, value in metrics.items():
+                    response += f'target_packet_bytes_total{{target_service="{service}"}} {value}\n'
+                self.send_response(200)
+                self.send_header("Content-Type", "text/plain; version=0.0.4")
+                self.end_headers()
+                self.wfile.write(response.encode())
+            else:
+                self.send_response(404)
+                self.end_headers()
+
+    if __name__ == "__main__":
+        server = HTTPServer(("", 8000), MetricsHandler)
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+
+        monitor_tcpdump()
