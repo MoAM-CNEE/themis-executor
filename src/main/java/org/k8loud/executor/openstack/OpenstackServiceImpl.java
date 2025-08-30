@@ -59,6 +59,20 @@ public class OpenstackServiceImpl implements OpenstackService {
 
     @Override
     @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "RESIZE_SERVER_FAILED")
+    public Map<String, Object> resizeServerUpByNamePattern(String region, String namePattern, String newFlavorId) throws OpenstackException {
+        OSClientV3 client = openstackClientWithRegion(region);
+        Optional<Server> server = openstackNovaService.getServers(client, Pattern.compile(namePattern)).stream().findFirst();
+        if (server.isPresent()) {
+            Flavor newFlavor = openstackNovaService.getFlavor(newFlavorId, client);
+            validateFlavors(newFlavor, server.get().getFlavor());
+            return resizeServer(server.get(), newFlavor, 120, client);
+        } else {
+            throw new OpenstackException(SERVER_NOT_EXISTS, "Failed to find server with name '%s'", namePattern);
+        }
+    }
+
+    @Override
+    @ThrowExceptionAndLogExecutionTime(exceptionClass = "OpenstackException", exceptionCode = "RESIZE_SERVER_FAILED")
     public Map<String, Object> resizeServerDown(String region, String serverId,
                                                 String newFlavorId) throws OpenstackException {
         OSClientV3 client = openstackClientWithRegion(region);

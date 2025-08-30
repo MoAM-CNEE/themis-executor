@@ -26,6 +26,20 @@ Content-Type: application/json
   }
 }
 
+### resize to h1.smedium by namePattern
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "openstack",
+  "actionName": "VerticalScalingUpAction",
+  "params": {
+    "region": "RegionOne",
+    "namePattern": "cnee-crud-operations-vm-b5b55aca",
+    "flavorId": "13a343c9-1fc5-4dae-9a74-203d290d736b"
+  }
+}
+
 ### resize to c1.small
 POST localhost:8080/execute
 Content-Type: application/json

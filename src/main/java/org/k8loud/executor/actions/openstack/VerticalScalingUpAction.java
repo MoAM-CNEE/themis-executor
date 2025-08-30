@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import org.k8loud.executor.exception.ActionException;
 import org.k8loud.executor.exception.OpenstackException;
+import org.k8loud.executor.exception.ParamNotFoundException;
 import org.k8loud.executor.model.Params;
 import org.k8loud.executor.openstack.OpenstackService;
 
@@ -12,6 +13,7 @@ import java.util.Map;
 @EqualsAndHashCode
 public class VerticalScalingUpAction extends OpenstackAction {
     private String region;
+    private String namePattern;
     private String serverId;
     private String flavorId;
 
@@ -21,9 +23,10 @@ public class VerticalScalingUpAction extends OpenstackAction {
 
     @Builder
     public VerticalScalingUpAction(OpenstackService openstackService,
-                                   String region, String serverId, String flavorId) {
+                                   String region, String namePattern, String serverId, String flavorId) {
         super(openstackService);
         this.region = region;
+        this.namePattern = namePattern;
         this.serverId = serverId;
         this.flavorId = flavorId;
     }
@@ -31,12 +34,19 @@ public class VerticalScalingUpAction extends OpenstackAction {
     @Override
     public void unpackParams(Params params) {
         region = params.getRequiredParam("region");
-        serverId = params.getRequiredParam("serverId");
+        namePattern = params.getOptionalParam("namePattern", null);
+        serverId = params.getOptionalParam("serverId", null);
         flavorId = params.getRequiredParam("flavorId");
     }
 
     @Override
     protected Map<String, Object> executeBody() throws OpenstackException {
-        return this.openstackService.resizeServerUp(region, serverId, flavorId);
+        if (namePattern == null && serverId == null) {
+            throw new ParamNotFoundException("Either namePattern or serverId should be provided");
+        }
+        if (serverId == null) {
+            return openstackService.resizeServerUpByNamePattern(region, namePattern, flavorId);
+        }
+        return openstackService.resizeServerUp(region, serverId, flavorId);
     }
 }
