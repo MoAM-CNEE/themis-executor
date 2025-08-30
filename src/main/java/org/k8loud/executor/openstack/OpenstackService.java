@@ -16,6 +16,8 @@ public interface OpenstackService {
 
     Map<String, Object> resizeServerDown(String region, String serverId, String newFlavorId) throws OpenstackException;
 
+    Map<String, Object> resizeServerDownByNamePattern(String region, String namePattern, String newFlavorId) throws OpenstackException;
+
     Map<String, Object> getServerNames(String region, String namePattern) throws OpenstackException, ValidationException;
 
     Map<String, Object> createServers(String region, String name, String imageId, String flavorId, String keypairName,
