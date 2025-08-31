@@ -39,3 +39,17 @@ Content-Type: application/json
     "flavorId": "f2559863-ef7d-416c-907e-4ea4043d4831"
   }
 }
+
+### resize to c1.small by namePattern
+POST localhost:8080/execute
+Content-Type: application/json
+
+{
+  "collectionName": "openstack",
+  "actionName": "VerticalScalingDownAction",
+  "params": {
+    "region": "RegionOne",
+    "namePattern": "cnee-crud-operations-vm-c0986973",
+    "flavorId": "f2559863-ef7d-416c-907e-4ea4043d4831"
+  }
+}

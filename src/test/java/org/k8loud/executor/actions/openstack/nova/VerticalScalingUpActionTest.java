@@ -51,8 +51,6 @@ public class VerticalScalingUpActionTest extends OpenstackActionBaseTest {
                 Arguments.of(
                         new Params(Map.of("serverId", SERVER_ID, "flavorId", FLAVOR_ID)), "region"),
                 Arguments.of(
-                        new Params(Map.of("region", REGION, "flavorId", FLAVOR_ID)), "serverId"),
-                Arguments.of(
                         new Params(Map.of("region", REGION, "serverId", SERVER_ID)), "flavorId"));
     }
 }

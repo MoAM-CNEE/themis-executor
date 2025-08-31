@@ -4,7 +4,7 @@ DOCKERHUB_USERNAME=proman3419
 IMAGE_NAME=themis-executor
 # w.x.y.z, one digit value each
 # when tinkering add -<description> suffix
-VER=0.0.0.8
+VER=0.0.0.9
 # MoAM-CNEE/themis-executor diverged from k8loud/themis-executor 0.0.4.4
 DEPLOY_NAMESPACE=themis-executor
 

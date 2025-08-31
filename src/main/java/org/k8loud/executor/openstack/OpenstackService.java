@@ -12,7 +12,11 @@ import java.util.Set;
 public interface OpenstackService {
     Map<String, Object> resizeServerUp(String region, String serverId, String newFlavorId) throws OpenstackException;
 
+    Map<String, Object> resizeServerUpByNamePattern(String region, String namePattern, String newFlavorId) throws OpenstackException;
+
     Map<String, Object> resizeServerDown(String region, String serverId, String newFlavorId) throws OpenstackException;
+
+    Map<String, Object> resizeServerDownByNamePattern(String region, String namePattern, String newFlavorId) throws OpenstackException;
 
     Map<String, Object> getServerNames(String region, String namePattern) throws OpenstackException, ValidationException;
 
